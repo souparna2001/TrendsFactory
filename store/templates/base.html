@@ -52,7 +52,7 @@
           <li class="nav-item">
             <a href="#contact" class="nav-link">Contact</a>
           </li>
-         '' 
+          </ul>
         </ul>
 
         <div class="icons d-flex">
@@ -66,9 +66,9 @@
             <i class="bx bx-heart"></i>
             <span class="d-flex">0</span>
           </div>
-          <a href="cart.html" class="icon">
+          <a href="{%url 'basket-items'%}" class="icon">
             <i class="bx bx-cart"></i>
-            <span class="d-flex">0</span>
+            <span class="d-flex">{{cart_count}}</span>
           </a>
         </div>
 

@@ -7,6 +7,17 @@ from store.models import Product,BasketItem,Size
 
 # Create your views here.
 
+def signin_required(fn):
+
+    def wrapper(request,*args,**kwargs):
+        if not request.user.is_authenticated:
+            return redirect("signin")
+        else: 
+            return fn(request,*args,**kwargs)
+        return wrapper
+
+
+
 # url:localhost:8000/register/
 # method:get,post
 # form_class:RegistrationForm
@@ -83,3 +94,47 @@ class BasketItemListView(View):
     def get(self,request,*args,**kwargs):
         qs=request.user.cart.cartitem.filter(is_order_placed=False)
         return render(request,"cart_list.html",{"data":qs})
+    
+
+# basket item remove
+# localhost:8000/basket/items/{id}/remove/
+
+class BasketItemRemoveView(View):
+    def get(self,request,*args,**kwargs):
+        id=kwargs.get("pk")
+        basket_item_object=BasketItem.objects.get(id=id)
+        basket_item_object.delete()
+        return redirect("basket-items")
+
+
+class CartItemUpdateQuantityView(View):
+    def post(self,request,*args,**kwargs):
+        action=request.POST.get("counterbutton")
+        print(action)
+        id=kwargs.get("pk")
+        basket_item_object=BasketItem.objects.get(id=id)
+
+        if action=="+":
+            basket_item_object.qty+=1
+            basket_item_object.save()
+        else:
+            basket_item_object.qty-=1
+            basket_item_object.save()  
+              
+        return redirect("basket-items")
+    
+
+
+class CheckOutView(View):
+    
+    def get(self,request,*args,**kwargs):
+        return render(request,"checkout.html")
+    
+    def post(self,request,*args,**kwargs):
+        email=request.POST.get("email")
+        phone=request.POST.get("phone")
+        address=request.POST.get("address")
+        print(email,phone,address)
+        return redirect("index")
+
+     
